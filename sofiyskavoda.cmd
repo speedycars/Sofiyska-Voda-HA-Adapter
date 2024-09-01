@@ -1,0 +1,1 @@
+"PATHTOPYTHON3\python.exe" "PATH\sofiyskavoda.py"

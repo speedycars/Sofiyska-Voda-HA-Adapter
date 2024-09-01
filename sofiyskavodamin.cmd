@@ -1,0 +1,1 @@
+start "Sofiyska Voda Repairs MQTT Agent" /min "PATH\sofiyskavoda.cmd"
