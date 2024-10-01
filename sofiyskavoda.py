@@ -22,6 +22,8 @@ service = Service()
 options = webdriver.ChromeOptions()
 options.add_argument('--headless=old')
 options.add_argument('--disable-search-engine-choice-screen')
+options.add_argument('--disable-gpu')
+options.add_argument('--no-sandbox')
 
 url = "https://gispx.sofiyskavoda.bg/WebApp.InfoCenter/"
 client_id = f'mqttsofiyskavodarepairs'
