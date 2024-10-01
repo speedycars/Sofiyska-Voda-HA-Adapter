@@ -1,11 +1,22 @@
 from bs4 import BeautifulSoup
 import datetime
 import time
-import random
-from selenium import webdriver
-from paho.mqtt import client as mqtt_client
+import configparser
+import pathlib
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from paho.mqtt import client as mqtt_client
+
+config_path = pathlib.Path(__file__).parent.absolute() / "config" / "config.cfg"
+config = configparser.ConfigParser()
+config.read(config_path, encoding='utf-8')
+
+broker = str(config.get('CONFIG', 'broker'))
+port = int(config.get('CONFIG', 'port'))
+username = str(config.get('CONFIG', 'username'))
+password = str(config.get('CONFIG', 'password'))
+rayon = str(config.get('CONFIG', 'rayon'))
+freq = int(config.get('CONFIG', 'freq'))
 
 service = Service()
 options = webdriver.ChromeOptions()
@@ -13,10 +24,6 @@ options.add_argument('--headless=old')
 options.add_argument('--disable-search-engine-choice-screen')
 
 url = "https://gispx.sofiyskavoda.bg/WebApp.InfoCenter/"
-broker = 'MQTT BROKER IP'
-port = PORT
-username = 'USERNAME'
-password = 'PASSWORD'
 client_id = f'mqttsofiyskavodarepairs'
 topic0 = "homeassistant/sensor/sofiyskavodarepairs/availability"
 topic1 = "homeassistant/sensor/sofiyskavodarepairs/location"
@@ -43,7 +50,7 @@ while True:
     for td in soup.find_all('td', {'class': 'tdBottomRowSeperator'},limit = 100):
         td = str(td).replace('<br/>', '&').replace('<td class="tdBottomRowSeperator" style="max-width: 365px;"><b>Местоположение:</b> ','').replace('<b>','').replace('</b>','').replace('</td>','')
         print(str(td)+'\n\n')
-        if 'Младост 4' in td:
+        if rayon in td:
             availability = 1
             location = str((td).split("&")[0].split(":")[1]).strip()
             typeofevent = str((td).split("&")[1].split(":")[1]).strip()
@@ -129,10 +136,12 @@ while True:
         except:
             return
 
+
     if __name__ == '__main__':
         run()
 
 
-    print('Cycle done! '+str(datetime.datetime.now())[0:-7]+'\n\n\n')
-    for i in range(120):
+    print('Cycle done! '+str(datetime.datetime.now())[0:-7]+'\n')
+    print('Next cycle starts in '+str(freq)+' seconds.'+'\n\n\n')
+    for i in range(freq):
         time.sleep(1)
