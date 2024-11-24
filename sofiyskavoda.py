@@ -54,7 +54,13 @@ while True:
         print(str(td)+'\n\n')
         if rayon in td:
             availability = 1
-            location = str((td).split("&")[0].split(":")[1]).strip()
+            try:
+                location = str((td).split("&")[0].split(":")[1]).strip()
+            except:
+                try:
+                    location = str((td).split("&")[0].split("-")[1:]).strip().replace("'","").replace("[","").replace("]","")
+                except:
+                    location = rayon
             typeofevent = str((td).split("&")[1].split(":")[1]).strip()
             description = str((td).split("&")[2].split(":")[1]).strip()
             start = str((td).split("&")[3].split(":")[1]+':'+(td).split("&")[3].split(":")[2]).strip()
